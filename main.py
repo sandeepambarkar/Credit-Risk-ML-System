@@ -38,18 +38,18 @@ class LoanApplication(BaseModel): #Pydantic Model (Validation)
 
 
 
-@app.post('/predict')
-def predict(data : LoanApplication):
+@app.post("/predict")
+def predict(data: LoanApplication):
     input_df = pd.DataFrame([data.model_dump()])
 
-    probability = ml_model['model'].predict_proba(input_df)[:, 1][0]
+    probability = float(ml_model["model"].predict_proba(input_df)[:, 1][0])
 
-    prediction = int(probability >= ml_model["threshold"])
+    prediction = int(probability >= float(ml_model["threshold"]))
 
     return {
         "default_probability": probability,
         "default_prediction": prediction,
-        "threshold": ml_model["threshold"],
+        "threshold": float(ml_model["threshold"]),
         "Result": "High Risk" if prediction == 1 else "Low Risk"
     }
 
